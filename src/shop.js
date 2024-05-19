@@ -1,4 +1,5 @@
 import { Route, Routes } from 'react-router-dom';
+import { Header } from './components';
 import styled from 'styled-components';
 
 const AppColumm = styled.div`
@@ -18,7 +19,7 @@ const Page = styled.div`
 const H2 = styled.h2`
 	text-align: center;
 `;
-const Header = () => <div>Шапка</div>;
+
 const Footer = () => <div>Футер</div>;
 
 export const Shop = () => {
@@ -38,7 +39,6 @@ export const Shop = () => {
 					<Route path="*" element={<div>Ошибка</div>} />
 				</Routes>
 			</Page>
-
 			<Footer />
 		</AppColumm>
 	);
