@@ -1,5 +1,9 @@
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { Icon, Button } from '../../../../components';
+import { ROLE } from '../../../../constants';
+import { selectUserLogin, selectUserRole, selectUserSession } from '../../../../selectors';
+import { logout } from '../../../../actions';
 import styled from 'styled-components';
 
 const RightAligned = styled.div`
@@ -8,15 +12,33 @@ const RightAligned = styled.div`
 	align-items: center;
 `;
 
+const UserName = styled.div`
+	font-size: 18px;
+	font-weight: bold;
+`;
+
 const ControlPanelContainer = ({ className }) => {
 	const navigate = useNavigate();
+
+	const roleId = useSelector(selectUserRole);
+	const login = useSelector(selectUserLogin);
+	const session = useSelector(selectUserSession);
+
+	const dispatch = useDispatch();
 
 	return (
 		<div className={className}>
 			<RightAligned>
-				<Button>
-					<Link to="/login">Войти</Link>
-				</Button>
+				{roleId === ROLE.GUEST ? (
+					<Button>
+						<Link to="/login">Войти</Link>
+					</Button>
+				) : (
+					<>
+						<UserName>{login}</UserName>
+						<Icon id="fa-sign-out" margin="0 0 0 10px" onClick={() => dispatch(logout(session))} />
+					</>
+				)}
 			</RightAligned>
 			<RightAligned>
 				<Icon id="fa-backward" margin="10px 0 0 0" onClick={() => navigate(-1)} />
