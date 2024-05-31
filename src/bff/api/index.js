@@ -6,3 +6,5 @@ export * from './get-categor';
 export * from './add-session';
 export * from './get-session';
 export * from './delete-session';
+export * from './delete-tovar';
+export * from './get-tovar';

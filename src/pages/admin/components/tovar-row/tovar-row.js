@@ -3,7 +3,7 @@ import { Icon } from '../../../../components';
 import { TableRow } from '../table-row/table-row';
 import styled from 'styled-components';
 
-const TovarRowContainer = ({ className, imageUrl, title, price, categor, categorId }) => {
+const TovarRowContainer = ({ className, imageUrl, title, price, categor, categorId, onTovarRemove }) => {
 	const dispatch = useDispatch();
 
 	return (
@@ -17,7 +17,7 @@ const TovarRowContainer = ({ className, imageUrl, title, price, categor, categor
 				<div className="price-columm">{price}</div>
 			</TableRow>
 			<Icon id="fa-pencil" margin="0 0 0 10px" onClick={() => dispatch(/*TODO*/)} />
-			<Icon id="fa-trash-o" margin="0 0 0 10px" onClick={() => dispatch(/*TODO*/)} />
+			<Icon id="fa-trash-o" margin="0 0 0 10px" onClick={onTovarRemove} />
 		</div>
 	);
 };

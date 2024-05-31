@@ -2,12 +2,17 @@ import { useEffect, useState } from 'react';
 import { Content, H2 } from '../../components';
 import { TovarRow, TableRow } from './components';
 import { useServerRequest } from '../../hooks';
+import { useDispatch } from 'react-redux';
+import { CLOSE_MODAL, openModal } from '../../actions';
 import styled from 'styled-components';
 
 const AdminContainer = ({ className }) => {
 	const [tovary, setTovary] = useState([]);
 	const [categor, setCategor] = useState([]);
 	const [errorMessage, setErrorMessage] = useState(null);
+	const [shouldUpdateTovarList, setShouldUpdateTovarList] = useState(false);
+
+	const dispatch = useDispatch();
 
 	const requestServer = useServerRequest();
 
@@ -21,7 +26,22 @@ const AdminContainer = ({ className }) => {
 			setTovary(tovaryRes.res);
 			setCategor(categorRes.res);
 		});
-	}, [requestServer]);
+	}, [requestServer, shouldUpdateTovarList]);
+
+	const onTovarRemove = (tovarId) => {
+		dispatch(
+			openModal({
+				text: 'Удалить статью?',
+				onConfirm: () => {
+					requestServer('removeTovar', tovarId).then(() => {
+						setShouldUpdateTovarList(!shouldUpdateTovarList);
+					});
+					dispatch(CLOSE_MODAL);
+				},
+				onCancel: () => dispatch(CLOSE_MODAL),
+			}),
+		);
+	};
 
 	return (
 		<div className={className}>
@@ -36,7 +56,16 @@ const AdminContainer = ({ className }) => {
 					</TableRow>
 
 					{tovary.map(({ id, title, imageUrl, price, categorId }) => (
-						<TovarRow key={id} id={id} title={title} imageUrl={imageUrl} price={price} categor={categor} categorId={categorId} />
+						<TovarRow
+							key={id}
+							id={id}
+							title={title}
+							imageUrl={imageUrl}
+							price={price}
+							categor={categor}
+							categorId={categorId}
+							onTovarRemove={() => onTovarRemove(id)}
+						/>
 					))}
 				</div>
 			</Content>

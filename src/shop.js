@@ -1,8 +1,8 @@
 import { useLayoutEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
-import { Header, Footer } from './components';
-import { Admin, Authorization, Registration } from './pages';
+import { Header, Footer, Modal } from './components';
+import { Admin, Authorization, Registration, Tovar } from './pages';
 import { setUser } from './actions';
 import styled from 'styled-components';
 
@@ -17,7 +17,7 @@ const AppColumm = styled.div`
 `;
 
 const Page = styled.div`
-	padding: 120px 0;
+	padding: 120px 0 20px;
 `;
 
 export const Shop = () => {
@@ -45,11 +45,12 @@ export const Shop = () => {
 					<Route path="/register" element={<Registration />} />
 					<Route path="/admin" element={<Admin />} />
 					<Route path="/corzina" element={<div>Корзина</div>} />
-					<Route path="/tovar/:tovarId" element={<div>Статья</div>} />
+					<Route path="/tovar/:id" element={<Tovar />} />
 					<Route path="*" element={<div>Ошибка</div>} />
 				</Routes>
 			</Page>
 			<Footer />
+			<Modal />
 		</AppColumm>
 	);
 };
