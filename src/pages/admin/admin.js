@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { Content, H2 } from '../../components';
+import { Button, Content, H2 } from '../../components';
 import { TovarRow, TableRow } from './components';
 import { useServerRequest } from '../../hooks';
 import { useDispatch } from 'react-redux';
 import { CLOSE_MODAL, openModal } from '../../actions';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
 const AdminContainer = ({ className }) => {
 	const [tovary, setTovary] = useState([]);
@@ -13,6 +14,7 @@ const AdminContainer = ({ className }) => {
 	const [shouldUpdateTovarList, setShouldUpdateTovarList] = useState(false);
 
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	const requestServer = useServerRequest();
 
@@ -46,7 +48,12 @@ const AdminContainer = ({ className }) => {
 	return (
 		<div className={className}>
 			<Content error={errorMessage}>
-				<H2>Товары</H2>
+				<div className="verhuska">
+					<H2>Товары</H2>
+					<Button width="195px" onClick={() => navigate('/admin/tovar')}>
+						Добавить товар
+					</Button>
+				</div>
 				<div>
 					<TableRow>
 						<div className="image-url-columm">Фото</div>
@@ -80,4 +87,18 @@ export const Admin = styled(AdminContainer)`
 	margin: 0 auto;
 	width: 680px;
 	font-size: 18px;
+
+	& .verhuska {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		width: 116%;
+	}
+
+	& button {
+		background: #dbaf3d;
+		border-radius: 25px;
+		height: 45px;
+		font-size: 22px;
+	}
 `;

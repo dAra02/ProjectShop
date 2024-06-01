@@ -1,10 +1,10 @@
-import { useDispatch } from 'react-redux';
 import { Icon } from '../../../../components';
 import { TableRow } from '../table-row/table-row';
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 
-const TovarRowContainer = ({ className, imageUrl, title, price, categor, categorId, onTovarRemove }) => {
-	const dispatch = useDispatch();
+const TovarRowContainer = ({ className, id, imageUrl, title, price, categor, categorId, onTovarRemove }) => {
+	const navigate = useNavigate();
 
 	return (
 		<div className={className}>
@@ -16,7 +16,7 @@ const TovarRowContainer = ({ className, imageUrl, title, price, categor, categor
 				<div className="categor-columm">{categor.map(({ id, name }) => (id === categorId ? name : ''))}</div>
 				<div className="price-columm">{price}</div>
 			</TableRow>
-			<Icon id="fa-pencil" margin="0 0 0 10px" onClick={() => dispatch(/*TODO*/)} />
+			<Icon id="fa-pencil" margin="0 0 0 10px" onClick={() => navigate(`/admin/${id}/edit`)} />
 			<Icon id="fa-trash-o" margin="0 0 0 10px" onClick={onTovarRemove} />
 		</div>
 	);

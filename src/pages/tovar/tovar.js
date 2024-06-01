@@ -1,41 +1,57 @@
-import { useEffect } from 'react';
+import { useEffect, useLayoutEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, H2 } from '../../components';
-import { useParams } from 'react-router-dom';
-import { loadTovarAsync } from '../../actions';
+import { useMatch, useParams } from 'react-router-dom';
+import { RESET_TOVAR_DATA, loadTovarAsync } from '../../actions';
 import { useServerRequest } from '../../hooks';
 import { selectTovar } from '../../selectors';
+import { TovarForm } from './components';
 import styled from 'styled-components';
 
 const TovarContainer = ({ className }) => {
 	const dispatch = useDispatch();
 	const params = useParams();
+	const isEditing = useMatch('/admin/:id/edit');
+	const isCreating = useMatch('/admin/tovar');
 	const requestServer = useServerRequest();
 	const tovar = useSelector(selectTovar);
 
+	useLayoutEffect(() => {
+		dispatch(RESET_TOVAR_DATA);
+	}, [dispatch, isCreating]);
+
 	useEffect(() => {
+		if (isCreating) {
+			return;
+		}
+
 		dispatch(loadTovarAsync(requestServer, params.id));
-	}, [requestServer, dispatch, params.id]);
+	}, [requestServer, dispatch, params.id, isCreating]);
 
 	const { imageUrl, title, price, content } = tovar;
 	return (
 		<div className={className}>
-			<div className="info">
-				<img src={imageUrl} alt="foto" />
-				<H2>{title}</H2>
-				<div className="price">
-					Цена: {price}
-					<Button width="135px" onClick={() => dispatch(/*TODO*/)}>
-						Купить
-					</Button>
-				</div>
+			{isCreating || isEditing ? (
+				<TovarForm tovar={tovar} />
+			) : (
+				<>
+					<div className="info">
+						<img src={imageUrl} alt="foto" />
+						<H2>{title}</H2>
+						<div className="price">
+							Цена: {price}
+							<Button width="135px" onClick={() => dispatch(/*TODO*/)}>
+								Купить
+							</Button>
+						</div>
 
-				<div className="tovar-text">
-					<span>Описание:</span>
-					<br></br>
-					{content}
-				</div>
-			</div>
+						<div className="tovar-text">
+							<span>Описание:</span>
+							<div>{content}</div>
+						</div>
+					</div>
+				</>
+			)}
 		</div>
 	);
 };
@@ -63,6 +79,8 @@ export const Tovar = styled(TovarContainer)`
 	}
 
 	& img {
+		width: 230px;
+
 		float: left;
 		border: 10px solid orange;
 		padding: 5px;
@@ -72,7 +90,6 @@ export const Tovar = styled(TovarContainer)`
 	& span {
 		font-size: 24px;
 		font-weight: 500;
-		margin: 0 5px 0 0;
 	}
 
 	& .price {
@@ -84,7 +101,8 @@ export const Tovar = styled(TovarContainer)`
 	}
 
 	& .tovar-text {
-		font-size: 18px;
+		font-size: 20px;
+		white-space: pre-line;
 		margin: 20px 0 0 0;
 	}
 `;

@@ -8,3 +8,6 @@ export * from './get-session';
 export * from './delete-session';
 export * from './delete-tovar';
 export * from './get-tovar';
+export * from './update-tovar';
+export * from './set-tovar-categor';
+export * from './add-tovar';

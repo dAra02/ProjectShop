@@ -5,3 +5,5 @@ export * from './load-tovar-async';
 export * from './set-tovar-data';
 export * from './close-modal';
 export * from './open-modal';
+export * from './save-tovar-async';
+export * from './reset-tovar-data';

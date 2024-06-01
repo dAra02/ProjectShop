@@ -17,6 +17,9 @@ export const tovarReducer = (state = initialTovarState, action) => {
 				...payload,
 			};
 		}
+		case ACTION_TYPE.RESET_TOVAR_DATA: {
+			return initialTovarState;
+		}
 		default:
 			return state;
 	}

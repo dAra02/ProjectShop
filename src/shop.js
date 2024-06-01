@@ -17,7 +17,7 @@ const AppColumm = styled.div`
 `;
 
 const Page = styled.div`
-	padding: 120px 0 20px;
+	padding: 120px 0 40px;
 `;
 
 export const Shop = () => {
@@ -44,8 +44,10 @@ export const Shop = () => {
 					<Route path="/login" element={<Authorization />} />
 					<Route path="/register" element={<Registration />} />
 					<Route path="/admin" element={<Admin />} />
-					<Route path="/corzina" element={<div>Корзина</div>} />
+					<Route path="/admin/:id/edit" element={<Tovar />} />
+					<Route path="/admin/tovar" element={<Tovar />} />
 					<Route path="/tovar/:id" element={<Tovar />} />
+					<Route path="/corzina" element={<div>Корзина</div>} />
 					<Route path="*" element={<div>Ошибка</div>} />
 				</Routes>
 			</Page>
