@@ -1,20 +1,32 @@
 import { useEffect, useState } from 'react';
 import { useServerRequest } from '../../hooks';
-import { TovarCard, CategorList } from './components';
+import { TovarCard, CategorList, Pagination } from './components';
+import { PAGINATION_LIMIT } from '../../constants';
+import { getLastPageFromLinks } from './utils';
 import styled from 'styled-components';
 
 const MainContainer = ({ className }) => {
 	const [tovar, setTovar] = useState([]);
 	const [categor, setCategor] = useState([]);
+	const [page, setPage] = useState(1);
+	const [lastPage, setLastPage] = useState(1);
 
 	const requestServer = useServerRequest();
 
 	useEffect(() => {
-		Promise.all([requestServer('fetchTovary'), requestServer('fetchCategor')]).then(([postsRes, categorRes]) => {
-			setTovar(postsRes.res);
-			setCategor(categorRes.res);
-		});
-	}, [requestServer]);
+		Promise.all([requestServer('fetchTovary', page, PAGINATION_LIMIT), requestServer('fetchCategor')]).then(
+			([
+				{
+					res: { tovary, links },
+				},
+				categorRes,
+			]) => {
+				setTovar(tovary);
+				setLastPage(getLastPageFromLinks(links));
+				setCategor(categorRes.res);
+			},
+		);
+	}, [requestServer, page]);
 
 	return (
 		<div className={className}>
@@ -48,6 +60,7 @@ const MainContainer = ({ className }) => {
 						<TovarCard key={id} id={id} title={title} imageUrl={imageUrl} price={price} />
 					))}
 				</div>
+				{lastPage > 1 && <Pagination page={page} lastPage={lastPage} setPage={setPage} />}
 			</div>
 		</div>
 	);
@@ -67,6 +80,7 @@ export const Main = styled(MainContainer)`
 
 	& .obortca {
 		margin-top: 44px;
+		width: 100%;
 	}
 
 	& .sort-price {
@@ -87,7 +101,7 @@ export const Main = styled(MainContainer)`
 		background: #eee;
 		border: 1px solid #eee;
 		border-radius: 25px;
-		width: 320px;
+		width: 26%;
 		padding: 10px;
 		height: 260px;
 		margin: 40px 0 0 25px;

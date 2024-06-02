@@ -33,6 +33,6 @@ export const TovarRow = styled(TovarRowContainer)`
 
 	& img {
 		border: 3px solid #000;
-		height: 130px;
+		width: 130px;
 	}
 `;

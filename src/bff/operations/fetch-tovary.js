@@ -1,10 +1,10 @@
 import { getTovary } from '../api';
 
-export const fetchTovary = async () => {
-	const tovary = await getTovary();
+export const fetchTovary = async (page, limit) => {
+	const { tovary, links } = await getTovary(page, limit);
 
 	return {
 		error: null,
-		res: tovary,
+		res: { tovary, links },
 	};
 };

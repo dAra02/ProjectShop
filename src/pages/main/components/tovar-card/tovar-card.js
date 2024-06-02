@@ -5,7 +5,9 @@ const TovarCardContainer = ({ className, id, title, imageUrl, price }) => {
 	return (
 		<div className={className}>
 			<Link to={`/tovar/${id}`}>
-				<img src={imageUrl} alt={title} />
+				<div className="img">
+					<img src={imageUrl} alt={title} />
+				</div>
 				<div className="tovar-card-footer">
 					<h4>{title}</h4>
 					<div className="tovar-card-info">
@@ -23,6 +25,12 @@ export const TovarCard = styled(TovarCardContainer)`
 	width: 200px;
 	margin: 20px;
 	border: 3px solid #898585;
+
+	& .img {
+		align-items: center;
+		height: 200px;
+		display: flex;
+	}
 
 	& img {
 		display: block;

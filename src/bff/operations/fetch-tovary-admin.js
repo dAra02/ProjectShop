@@ -14,7 +14,7 @@ export const fetchTovaryAdmin = async (hash) => {
 		};
 	}
 
-	const tovary = await getTovary();
+	const { tovary } = await getTovary();
 
 	return {
 		error: null,
