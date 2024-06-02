@@ -1,19 +1,6 @@
-import { ROLE } from '../constants';
 import { getTovary } from '../api';
-import { sessions } from '../sessions';
 
-export const fetchTovary = async (hash) => {
-	const accessRoles = [ROLE.ADMIN];
-
-	const access = await sessions.access(hash, accessRoles);
-
-	if (!access) {
-		return {
-			error: 'Доступ запрещён',
-			res: null,
-		};
-	}
-
+export const fetchTovary = async () => {
 	const tovary = await getTovary();
 
 	return {

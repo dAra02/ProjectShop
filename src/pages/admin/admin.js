@@ -19,7 +19,7 @@ const AdminContainer = ({ className }) => {
 	const requestServer = useServerRequest();
 
 	useEffect(() => {
-		Promise.all([requestServer('fetchTovary'), requestServer('fetchCategor')]).then(([tovaryRes, categorRes]) => {
+		Promise.all([requestServer('fetchTovaryAdmin'), requestServer('fetchCategor')]).then(([tovaryRes, categorRes]) => {
 			if (tovaryRes.error || categorRes.error) {
 				setErrorMessage(tovaryRes.error || categorRes.error);
 				return;
