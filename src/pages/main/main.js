@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useServerRequest } from '../../hooks';
-import { TovarCard, CategorList, Pagination } from './components';
+import { TovarCard, CategorList, Pagination, Search } from './components';
 import { PAGINATION_LIMIT } from '../../constants';
-import { getLastPageFromLinks } from './utils';
+import { debounce, getLastPageFromLinks } from './utils';
 import styled from 'styled-components';
 
 const MainContainer = ({ className }) => {
@@ -11,10 +11,13 @@ const MainContainer = ({ className }) => {
 	const [page, setPage] = useState(1);
 	const [lastPage, setLastPage] = useState(1);
 
+	const [seatchPhrase, setSeatchPhrase] = useState('');
+	const [shouldSearch, setShouldSearch] = useState(false);
+
 	const requestServer = useServerRequest();
 
 	useEffect(() => {
-		Promise.all([requestServer('fetchTovary', page, PAGINATION_LIMIT), requestServer('fetchCategor')]).then(
+		Promise.all([requestServer('fetchTovary', seatchPhrase, page, PAGINATION_LIMIT), requestServer('fetchCategor')]).then(
 			([
 				{
 					res: { tovary, links },
@@ -26,49 +29,69 @@ const MainContainer = ({ className }) => {
 				setCategor(categorRes.res);
 			},
 		);
-	}, [requestServer, page]);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [requestServer, page, shouldSearch]);
+
+	const startDelayedSearch = useMemo(() => debounce(setShouldSearch, 2000), []);
+
+	const onSearch = ({ target }) => {
+		setSeatchPhrase(target.value);
+		startDelayedSearch(!shouldSearch);
+	};
 
 	return (
 		<div className={className}>
-			<div className="categor">
-				<h3>Категория товаров:</h3>
-				{categor.map(({ id, name }) => (
-					<CategorList
-						key={id}
-						name={name}
-						onClick={() => {
-							/*TODO*/
-							console.log('categor');
-						}}
-					/>
-				))}
-			</div>
-			<div className="obortca">
-				<div className="sort-price">
-					<div
-						className="bloc-text-sort"
-						onClick={() => {
-							/*TODO*/
-							console.log('sort');
-						}}
-					>
-						Сортировать по цене
-					</div>
-				</div>
-				<div className="post-list">
-					{tovar.map(({ id, title, imageUrl, price }) => (
-						<TovarCard key={id} id={id} title={title} imageUrl={imageUrl} price={price} />
+			<Search seatchPhrase={seatchPhrase} onChange={onSearch} />
+			<div className="obortca-componenta">
+				<div className="categor">
+					<h3>Категория товаров:</h3>
+					{categor.map(({ id, name }) => (
+						<CategorList
+							key={id}
+							name={name}
+							onClick={() => {
+								/*TODO*/
+								console.log('categor');
+							}}
+						/>
 					))}
 				</div>
-				{lastPage > 1 && <Pagination page={page} lastPage={lastPage} setPage={setPage} />}
+				<div className="obortca">
+					{tovar.length > 0 ? (
+						<>
+							<div className="sort-price">
+								<div
+									className="bloc-text-sort"
+									onClick={() => {
+										/*TODO*/
+										console.log('sort');
+									}}
+								>
+									Сортировать по цене
+								</div>
+							</div>
+
+							<div className="tovar-list">
+								{tovar.map(({ id, title, imageUrl, price }) => (
+									<TovarCard key={id} id={id} title={title} imageUrl={imageUrl} price={price} />
+								))}
+							</div>
+						</>
+					) : (
+						<div className="no-tovar-found">Товары не найдены</div>
+					)}
+					{lastPage > 1 && tovar.length > 0 && <Pagination page={page} lastPage={lastPage} setPage={setPage} />}
+				</div>
 			</div>
 		</div>
 	);
 };
 
 export const Main = styled(MainContainer)`
-	flex-wrap: inherit;
-	display: flex;
+	& .obortca-componenta {
+		flex-wrap: inherit;
+		display: flex;
+	}
 
 	& h3 {
 		margin-bottom: 10px;
@@ -107,9 +130,15 @@ export const Main = styled(MainContainer)`
 		margin: 40px 0 0 25px;
 	}
 
-	& .post-list {
+	& .tovar-list {
 		display: flex;
 		flex-wrap: wrap;
 		padding: 0 20px 20px 20px;
+	}
+
+	& .no-tovar-found {
+		font-size: 18px;
+		margin-top: 40px;
+		text-align: center;
 	}
 `;

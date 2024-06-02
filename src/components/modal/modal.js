@@ -33,7 +33,7 @@ const ModalContainer = ({ className }) => {
 
 export const Modal = styled(ModalContainer)`
 	position: fixed;
-	z-index: 10;
+	z-index: 20;
 	top: 0;
 	right: 0;
 	bottom: 0;
