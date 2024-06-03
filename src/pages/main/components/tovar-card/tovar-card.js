@@ -11,7 +11,7 @@ const TovarCardContainer = ({ className, id, title, imageUrl, price }) => {
 				<div className="tovar-card-footer">
 					<h4>{title}</h4>
 					<div className="tovar-card-info">
-						<div className="publisshed-at">Цена: {price}</div>
+						<div className="publisshed-at">Цена: {price} руб.</div>
 					</div>
 				</div>
 			</Link>

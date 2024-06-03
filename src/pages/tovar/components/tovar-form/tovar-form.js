@@ -57,22 +57,24 @@ const TovarFormContainer = ({ className, tovar: { id, imageUrl, title, price, co
 
 	const onImageChange = ({ target }) => setImageUrlValue(target.value);
 	const onTitleChange = ({ target }) => setTitleValue(target.value);
-	const onPriceChange = ({ target }) => setPriceValue(target.value);
+	const onPriceChange = ({ target }) => setPriceValue(Number(target.value));
 
 	return (
 		<div className={className}>
 			<Input value={imageUrlValue} placeholder="Изображение..." onChange={onImageChange} />
 			<Input value={titleValue} placeholder="Заголовок..." onChange={onTitleChange} />
-			<Input value={priceValue} placeholder="Цена..." onChange={onPriceChange} />
+			<Input value={priceValue} type="number" width="25%" placeholder="Цена..." onChange={onPriceChange} />
 			<div className="icon-and-select">
 				<div className="categor-select">
 					<div className="text-categor">Выбор категории:</div>
 					<select value={selectedCategorId} onChange={onTovarChange}>
-						{categor.map(({ id: categorId, name }) => (
-							<option key={categorId} value={categorId}>
-								{name}
-							</option>
-						))}
+						{categor
+							.filter(({ id }) => id !== 0)
+							.map(({ id: categorId, name }) => (
+								<option key={categorId} value={categorId}>
+									{name}
+								</option>
+							))}
 					</select>
 				</div>
 				<div className="icon">

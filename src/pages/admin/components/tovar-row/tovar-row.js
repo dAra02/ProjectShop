@@ -14,7 +14,7 @@ const TovarRowContainer = ({ className, id, imageUrl, title, price, categor, cat
 				</div>
 				<div className="title-columm">{title}</div>
 				<div className="categor-columm">{categor.map(({ id, name }) => (id === categorId ? name : ''))}</div>
-				<div className="price-columm">{price}</div>
+				<div className="price-columm">{price} руб.</div>
 			</TableRow>
 			<Icon id="fa-pencil" margin="0 0 0 10px" onClick={() => navigate(`/admin/${id}/edit`)} />
 			<Icon id="fa-trash-o" margin="0 0 0 10px" onClick={onTovarRemove} />

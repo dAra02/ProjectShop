@@ -39,7 +39,7 @@ const TovarContainer = ({ className }) => {
 						<img src={imageUrl} alt="foto" />
 						<H2>{title}</H2>
 						<div className="price">
-							Цена: {price}
+							Цена: {price} руб.
 							<Button width="135px" onClick={() => dispatch(/*TODO*/)}>
 								Купить
 							</Button>

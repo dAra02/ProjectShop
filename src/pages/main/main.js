@@ -10,14 +10,15 @@ const MainContainer = ({ className }) => {
 	const [categor, setCategor] = useState([]);
 	const [page, setPage] = useState(1);
 	const [lastPage, setLastPage] = useState(1);
+	const [sort, setSort] = useState('desc');
+	const [idCategor, setIdCategor] = useState(null);
 
 	const [seatchPhrase, setSeatchPhrase] = useState('');
 	const [shouldSearch, setShouldSearch] = useState(false);
 
 	const requestServer = useServerRequest();
-
 	useEffect(() => {
-		Promise.all([requestServer('fetchTovary', seatchPhrase, page, PAGINATION_LIMIT), requestServer('fetchCategor')]).then(
+		Promise.all([requestServer('fetchTovary', seatchPhrase, page, PAGINATION_LIMIT, sort, idCategor), requestServer('fetchCategor')]).then(
 			([
 				{
 					res: { tovary, links },
@@ -30,13 +31,17 @@ const MainContainer = ({ className }) => {
 			},
 		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [requestServer, page, shouldSearch]);
+	}, [requestServer, page, shouldSearch, sort, idCategor]);
 
 	const startDelayedSearch = useMemo(() => debounce(setShouldSearch, 2000), []);
 
 	const onSearch = ({ target }) => {
 		setSeatchPhrase(target.value);
 		startDelayedSearch(!shouldSearch);
+	};
+
+	const onSortPrice = () => {
+		sort === 'desc' ? setSort('asc') : setSort('desc');
 	};
 
 	return (
@@ -50,8 +55,7 @@ const MainContainer = ({ className }) => {
 							key={id}
 							name={name}
 							onClick={() => {
-								/*TODO*/
-								console.log('categor');
+								setIdCategor(id);
 							}}
 						/>
 					))}
@@ -60,14 +64,16 @@ const MainContainer = ({ className }) => {
 					{tovar.length > 0 ? (
 						<>
 							<div className="sort-price">
-								<div
-									className="bloc-text-sort"
-									onClick={() => {
-										/*TODO*/
-										console.log('sort');
-									}}
-								>
-									Сортировать по цене
+								<div className="bloc-text-sort" onClick={onSortPrice}>
+									{sort === 'desc' ? (
+										<span>
+											Сортировка цены по <span className="unicod">↓</span>
+										</span>
+									) : (
+										<span>
+											Сортировка цены по <span className="unicod">↑</span>
+										</span>
+									)}
 								</div>
 							</div>
 
@@ -91,6 +97,17 @@ export const Main = styled(MainContainer)`
 	& .obortca-componenta {
 		flex-wrap: inherit;
 		display: flex;
+	}
+
+	& span {
+		display: flex;
+		align-items: center;
+	}
+
+	& .unicod {
+		font-size: 24px;
+		font-weight: bold;
+		margin: 0 0 0 5px;
 	}
 
 	& h3 {
