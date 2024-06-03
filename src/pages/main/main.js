@@ -53,6 +53,8 @@ const MainContainer = ({ className }) => {
 					{categor.map(({ id, name }) => (
 						<CategorList
 							key={id}
+							id={id}
+							idCategor={idCategor}
 							name={name}
 							onClick={() => {
 								setIdCategor(id);
@@ -141,10 +143,10 @@ export const Main = styled(MainContainer)`
 		background: #eee;
 		border: 1px solid #eee;
 		border-radius: 25px;
-		width: 26%;
+		width: 27%;
 		padding: 10px;
 		height: 260px;
-		margin: 40px 0 0 25px;
+		margin: 40px 0 0 24px;
 	}
 
 	& .tovar-list {
