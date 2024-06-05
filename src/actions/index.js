@@ -7,3 +7,7 @@ export * from './close-modal';
 export * from './open-modal';
 export * from './save-tovar-async';
 export * from './reset-tovar-data';
+export * from './add-to-cart';
+export * from './increase-quantity';
+export * from './decrease-quantity';
+export * from './remove-from-cart';

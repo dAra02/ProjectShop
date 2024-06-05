@@ -33,7 +33,7 @@ const AdminContainer = ({ className }) => {
 	const onTovarRemove = (tovarId) => {
 		dispatch(
 			openModal({
-				text: 'Удалить статью?',
+				text: 'Удалить товар?',
 				onConfirm: () => {
 					requestServer('removeTovar', tovarId).then(() => {
 						setShouldUpdateTovarList(!shouldUpdateTovarList);

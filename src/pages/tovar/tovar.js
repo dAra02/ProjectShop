@@ -2,7 +2,7 @@ import { useEffect, useLayoutEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, H2 } from '../../components';
 import { useMatch, useParams } from 'react-router-dom';
-import { RESET_TOVAR_DATA, loadTovarAsync } from '../../actions';
+import { RESET_TOVAR_DATA, addToCart, loadTovarAsync } from '../../actions';
 import { useServerRequest } from '../../hooks';
 import { selectTovar } from '../../selectors';
 import { TovarForm } from './components';
@@ -28,6 +28,10 @@ const TovarContainer = ({ className }) => {
 		dispatch(loadTovarAsync(requestServer, params.id));
 	}, [requestServer, dispatch, params.id, isCreating]);
 
+	const handleAddToCart = () => {
+		dispatch(addToCart(tovar));
+	};
+
 	const { imageUrl, title, price, content } = tovar;
 	return (
 		<div className={className}>
@@ -40,7 +44,7 @@ const TovarContainer = ({ className }) => {
 						<H2>{title}</H2>
 						<div className="price">
 							Цена: {price} руб.
-							<Button width="135px" onClick={() => dispatch(/*TODO*/)}>
+							<Button width="135px" onClick={handleAddToCart}>
 								Купить
 							</Button>
 						</div>

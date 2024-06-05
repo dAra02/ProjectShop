@@ -103,7 +103,7 @@
     {
       "image_url": "asdasd",
       "title": "asdasdasd",
-      "content": "asdasdasdasd",
+      "content": "dasd",
       "price": 100000,
       "categor_id": 3,
       "id": "Shfx9UN"
@@ -135,16 +135,5 @@
       "name": "Оперативная память"
     }
   ],
-  "sessions": [
-    {
-      "hash": "0.66469068124961716570453518215799704194068908691406",
-      "user": {
-        "id": "001",
-        "login": "danil",
-        "password": "qwe123",
-        "roleId": 0
-      },
-      "id": 1
-    }
-  ]
+  "sessions": []
 }
