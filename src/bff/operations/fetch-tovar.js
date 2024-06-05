@@ -1,7 +1,21 @@
 import { getTovar } from '../api';
 
 export const fetchTovar = async (tovarId) => {
-	const tovar = await getTovar(tovarId);
+	let tovar;
+	let error;
+
+	try {
+		tovar = await getTovar(tovarId);
+	} catch (postError) {
+		error = postError;
+	}
+
+	if (error) {
+		return {
+			error,
+			res: null,
+		};
+	}
 
 	return {
 		error: null,

@@ -1,17 +1,21 @@
 import { useEffect, useState } from 'react';
-import { Button, Content, H2 } from '../../components';
+import { Button, PrivateContent, H2 } from '../../components';
 import { TovarRow, TableRow } from './components';
 import { useServerRequest } from '../../hooks';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { CLOSE_MODAL, openModal } from '../../actions';
-import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { ROLE } from '../../constants';
+import { checkAccess } from '../../utils';
+import { selectUserRole } from '../../selectors';
+import styled from 'styled-components';
 
 const AdminContainer = ({ className }) => {
 	const [tovary, setTovary] = useState([]);
 	const [categor, setCategor] = useState([]);
 	const [errorMessage, setErrorMessage] = useState(null);
 	const [shouldUpdateTovarList, setShouldUpdateTovarList] = useState(false);
+	const userRole = useSelector(selectUserRole);
 
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
@@ -19,6 +23,10 @@ const AdminContainer = ({ className }) => {
 	const requestServer = useServerRequest();
 
 	useEffect(() => {
+		if (!checkAccess([ROLE.ADMIN], userRole)) {
+			return;
+		}
+
 		Promise.all([requestServer('fetchTovaryAdmin'), requestServer('fetchCategor')]).then(([tovaryRes, categorRes]) => {
 			if (tovaryRes.error || categorRes.error) {
 				setErrorMessage(tovaryRes.error || categorRes.error);
@@ -28,13 +36,16 @@ const AdminContainer = ({ className }) => {
 			setTovary(tovaryRes.res);
 			setCategor(categorRes.res);
 		});
-	}, [requestServer, shouldUpdateTovarList]);
+	}, [requestServer, shouldUpdateTovarList, userRole]);
 
 	const onTovarRemove = (tovarId) => {
 		dispatch(
 			openModal({
 				text: 'Удалить товар?',
 				onConfirm: () => {
+					if (!checkAccess([ROLE.ADMIN], userRole)) {
+						return;
+					}
 					requestServer('removeTovar', tovarId).then(() => {
 						setShouldUpdateTovarList(!shouldUpdateTovarList);
 					});
@@ -47,7 +58,7 @@ const AdminContainer = ({ className }) => {
 
 	return (
 		<div className={className}>
-			<Content error={errorMessage}>
+			<PrivateContent access={[ROLE.ADMIN]} serverError={errorMessage}>
 				<div className="verhuska">
 					<H2>Товары</H2>
 					<Button width="195px" onClick={() => navigate('/admin/tovar')}>
@@ -75,7 +86,7 @@ const AdminContainer = ({ className }) => {
 						/>
 					))}
 				</div>
-			</Content>
+			</PrivateContent>
 		</div>
 	);
 };

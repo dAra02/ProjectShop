@@ -1,9 +1,10 @@
 import { useLayoutEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Route, Routes } from 'react-router-dom';
-import { Header, Footer, Modal } from './components';
+import { Header, Footer, Modal, Error } from './components';
 import { Admin, Authorization, Cart, Main, Registration, Tovar } from './pages';
 import { setUser } from './actions';
+import { ERROR } from './constants';
 import styled from 'styled-components';
 
 const AppColumm = styled.div`
@@ -48,7 +49,7 @@ export const Shop = () => {
 					<Route path="/admin/tovar" element={<Tovar />} />
 					<Route path="/tovar/:id" element={<Tovar />} />
 					<Route path="/corzina" element={<Cart />} />
-					<Route path="*" element={<div>Ошибка</div>} />
+					<Route path="*" element={<Error error={ERROR.PAGE_NOT_EXIST} />} />
 				</Routes>
 			</Page>
 			<Footer />

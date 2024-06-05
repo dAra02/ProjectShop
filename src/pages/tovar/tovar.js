@@ -1,18 +1,21 @@
-import { useEffect, useLayoutEffect } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, H2 } from '../../components';
+import { Button, Error, H2, PrivateContent } from '../../components';
 import { useMatch, useParams } from 'react-router-dom';
 import { RESET_TOVAR_DATA, addToCart, loadTovarAsync } from '../../actions';
 import { useServerRequest } from '../../hooks';
 import { selectTovar } from '../../selectors';
 import { TovarForm } from './components';
+import { ROLE } from '../../constants';
 import styled from 'styled-components';
 
 const TovarContainer = ({ className }) => {
+	const [error, setError] = useState(null);
 	const dispatch = useDispatch();
 	const params = useParams();
-	const isEditing = useMatch('/admin/:id/edit');
-	const isCreating = useMatch('/admin/tovar');
+	const [isLoading, setIsLoading] = useState(true);
+	const isEditing = !!useMatch('/admin/:id/edit');
+	const isCreating = !!useMatch('/admin/tovar');
 	const requestServer = useServerRequest();
 	const tovar = useSelector(selectTovar);
 
@@ -22,42 +25,53 @@ const TovarContainer = ({ className }) => {
 
 	useEffect(() => {
 		if (isCreating) {
+			setIsLoading(false);
 			return;
 		}
 
-		dispatch(loadTovarAsync(requestServer, params.id));
+		dispatch(loadTovarAsync(requestServer, params.id)).then((tovarData) => {
+			setError(tovarData.error);
+			setIsLoading(false);
+		});
 	}, [requestServer, dispatch, params.id, isCreating]);
 
 	const handleAddToCart = () => {
 		dispatch(addToCart(tovar));
 	};
-
 	const { imageUrl, title, price, content } = tovar;
-	return (
-		<div className={className}>
-			{isCreating || isEditing ? (
-				<TovarForm tovar={tovar} />
-			) : (
-				<>
-					<div className="info">
-						<img src={imageUrl} alt="foto" />
-						<H2>{title}</H2>
-						<div className="price">
-							Цена: {price} руб.
-							<Button width="135px" onClick={handleAddToCart}>
-								Купить
-							</Button>
-						</div>
 
-						<div className="tovar-text">
-							<span>Описание:</span>
-							<div>{content}</div>
-						</div>
+	if (isLoading) {
+		return null;
+	}
+
+	const SpecificTovarPage =
+		isCreating || isEditing ? (
+			<PrivateContent access={[ROLE.ADMIN]} serverError={error}>
+				<div className={className}>
+					<TovarForm tovar={tovar} />
+				</div>
+			</PrivateContent>
+		) : (
+			<div className={className}>
+				<div className="info">
+					<img src={imageUrl} alt="foto" />
+					<H2>{title}</H2>
+					<div className="price">
+						Цена: {price} руб.
+						<Button width="135px" onClick={handleAddToCart}>
+							Купить
+						</Button>
 					</div>
-				</>
-			)}
-		</div>
-	);
+
+					<div className="tovar-text">
+						<span>Описание:</span>
+						<div>{content}</div>
+					</div>
+				</div>
+			</div>
+		);
+
+	return error ? <Error error={error} /> : SpecificTovarPage;
 };
 
 export const Tovar = styled(TovarContainer)`
