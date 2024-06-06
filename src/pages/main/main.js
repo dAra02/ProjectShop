@@ -3,12 +3,14 @@ import { useServerRequest } from '../../hooks';
 import { TovarCard, CategorList, Pagination, Search } from './components';
 import { PAGINATION_LIMIT } from '../../constants';
 import { debounce, getLastPageFromLinks } from './utils';
+import { Loader } from '../../components';
 import styled from 'styled-components';
 
 const MainContainer = ({ className }) => {
 	const [tovar, setTovar] = useState([]);
 	const [categor, setCategor] = useState([]);
 	const [page, setPage] = useState(1);
+	const [isLoading, setIsLoading] = useState(true);
 	const [lastPage, setLastPage] = useState(1);
 	const [sort, setSort] = useState('desc');
 	const [idCategor, setIdCategor] = useState(null);
@@ -28,6 +30,7 @@ const MainContainer = ({ className }) => {
 				setTovar(tovary);
 				setLastPage(getLastPageFromLinks(links));
 				setCategor(categorRes.res);
+				setIsLoading(false);
 			},
 		);
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -41,8 +44,14 @@ const MainContainer = ({ className }) => {
 	};
 
 	const onSortPrice = () => {
+		setIsLoading(true);
+
 		sort === 'desc' ? setSort('asc') : setSort('desc');
 	};
+
+	if (isLoading) {
+		return <Loader />;
+	}
 
 	return (
 		<div className={className}>
@@ -57,6 +66,7 @@ const MainContainer = ({ className }) => {
 							idCategor={idCategor}
 							name={name}
 							onClick={() => {
+								setIsLoading(true);
 								setIdCategor(id);
 							}}
 						/>

@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button, Error, H2, PrivateContent } from '../../components';
+import { Button, Error, H2, Loader, PrivateContent } from '../../components';
 import { useMatch, useParams } from 'react-router-dom';
 import { RESET_TOVAR_DATA, addToCart, loadTovarAsync } from '../../actions';
 import { useServerRequest } from '../../hooks';
@@ -41,7 +41,7 @@ const TovarContainer = ({ className }) => {
 	const { imageUrl, title, price, content } = tovar;
 
 	if (isLoading) {
-		return null;
+		return <Loader />;
 	}
 
 	const SpecificTovarPage =

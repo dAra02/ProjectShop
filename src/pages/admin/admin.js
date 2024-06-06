@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, PrivateContent, H2 } from '../../components';
+import { Button, PrivateContent, H2, Loader } from '../../components';
 import { TovarRow, TableRow } from './components';
 import { useServerRequest } from '../../hooks';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,6 +14,7 @@ const AdminContainer = ({ className }) => {
 	const [tovary, setTovary] = useState([]);
 	const [categor, setCategor] = useState([]);
 	const [errorMessage, setErrorMessage] = useState(null);
+	const [isLoading, setIsLoading] = useState(true);
 	const [shouldUpdateTovarList, setShouldUpdateTovarList] = useState(false);
 	const userRole = useSelector(selectUserRole);
 
@@ -35,6 +36,7 @@ const AdminContainer = ({ className }) => {
 
 			setTovary(tovaryRes.res);
 			setCategor(categorRes.res);
+			setIsLoading(false);
 		});
 	}, [requestServer, shouldUpdateTovarList, userRole]);
 
@@ -49,6 +51,7 @@ const AdminContainer = ({ className }) => {
 					requestServer('removeTovar', tovarId).then(() => {
 						setShouldUpdateTovarList(!shouldUpdateTovarList);
 					});
+					setIsLoading(true);
 					dispatch(CLOSE_MODAL);
 				},
 				onCancel: () => dispatch(CLOSE_MODAL),
@@ -59,33 +62,39 @@ const AdminContainer = ({ className }) => {
 	return (
 		<div className={className}>
 			<PrivateContent access={[ROLE.ADMIN]} serverError={errorMessage}>
-				<div className="verhuska">
-					<H2>Товары</H2>
-					<Button width="195px" onClick={() => navigate('/admin/tovar')}>
-						Добавить товар
-					</Button>
-				</div>
-				<div>
-					<TableRow>
-						<div className="image-url-columm">Фото</div>
-						<div className="title-columm">Название</div>
-						<div className="categor-columm">Категория</div>
-						<div className="price-columm">Цена</div>
-					</TableRow>
+				{isLoading ? (
+					<Loader />
+				) : (
+					<>
+						<div className="verhuska">
+							<H2>Товары</H2>
+							<Button width="195px" onClick={() => navigate('/admin/tovar')}>
+								Добавить товар
+							</Button>
+						</div>
+						<div>
+							<TableRow>
+								<div className="image-url-columm">Фото</div>
+								<div className="title-columm">Название</div>
+								<div className="categor-columm">Категория</div>
+								<div className="price-columm">Цена</div>
+							</TableRow>
 
-					{tovary.map(({ id, title, imageUrl, price, categorId }) => (
-						<TovarRow
-							key={id}
-							id={id}
-							title={title}
-							imageUrl={imageUrl}
-							price={price}
-							categor={categor}
-							categorId={categorId}
-							onTovarRemove={() => onTovarRemove(id)}
-						/>
-					))}
-				</div>
+							{tovary.map(({ id, title, imageUrl, price, categorId }) => (
+								<TovarRow
+									key={id}
+									id={id}
+									title={title}
+									imageUrl={imageUrl}
+									price={price}
+									categor={categor}
+									categorId={categorId}
+									onTovarRemove={() => onTovarRemove(id)}
+								/>
+							))}
+						</div>
+					</>
+				)}
 			</PrivateContent>
 		</div>
 	);

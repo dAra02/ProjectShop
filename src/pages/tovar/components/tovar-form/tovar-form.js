@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { Icon, Input } from '../../../../components';
+import { Icon, Input, Loader } from '../../../../components';
 import { sanitizeContent } from './utils';
 import { useDispatch } from 'react-redux';
 import { useServerRequest } from '../../../../hooks';
@@ -11,6 +11,7 @@ const TovarFormContainer = ({ className, tovar: { id, imageUrl, title, price, co
 	const [imageUrlValue, setImageUrlValue] = useState(imageUrl);
 	const [titleValue, setTitleValue] = useState(title);
 	const [priceValue, setPriceValue] = useState(price);
+	const [isLoading, setIsLoading] = useState(true);
 	const contentRef = useRef(null);
 	const [selectedCategorId, setSelectedCategorId] = useState(categorId);
 	const [categor, setCategor] = useState([]);
@@ -31,12 +32,13 @@ const TovarFormContainer = ({ className, tovar: { id, imageUrl, title, price, co
 			if (error) {
 				return;
 			}
-
+			setIsLoading(false);
 			setCategor(res);
 		});
 	}, [requestServer]);
 
 	const onSave = () => {
+		setIsLoading(true);
 		const newContent = sanitizeContent(contentRef.current.innerHTML);
 
 		dispatch(
@@ -50,6 +52,10 @@ const TovarFormContainer = ({ className, tovar: { id, imageUrl, title, price, co
 			}),
 		).then(() => navigate(`/admin`));
 	};
+
+	if (isLoading) {
+		return <Loader />;
+	}
 
 	const onTovarChange = ({ target }) => {
 		setSelectedCategorId(Number(target.value));
