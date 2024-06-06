@@ -6,5 +6,4 @@ export * from './fetch-categor';
 export * from './remove-tovar';
 export * from './fetch-tovar';
 export * from './save-tovar';
-export * from './update-tovar-categor';
 export * from './fetch-tovary';

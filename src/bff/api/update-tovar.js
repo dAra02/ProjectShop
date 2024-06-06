@@ -1,4 +1,4 @@
-export const updateTovar = ({ id, imageUrl, price, title, content }) =>
+export const updateTovar = ({ id, imageUrl, price, title, content, selectedCategorId }) =>
 	fetch(`http://localhost:3005/tovary/${id}`, {
 		method: 'PATCH',
 		headers: {
@@ -10,5 +10,6 @@ export const updateTovar = ({ id, imageUrl, price, title, content }) =>
 			price,
 			title,
 			content,
+			categor_id: selectedCategorId,
 		}),
 	}).then((loadedTovar) => loadedTovar.json());
